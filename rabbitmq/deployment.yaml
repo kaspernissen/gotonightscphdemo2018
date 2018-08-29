@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      name: rabbitmq
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+        - containerPort: 15672
+          protocol: TCP
+        - containerPort: 5672
+          protocol: TCP
+        env:
+          - name: RABBITMQ_ERLANG_COOKIE
+            value: "test"
+          - name: RABBITMQ_DEFAULT_USER
+            value: "someuser"
+          - name: RABBITMQ_DEFAULT_PASS
+            value: "secret"
